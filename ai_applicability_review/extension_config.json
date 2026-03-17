@@ -1,0 +1,47 @@
+{
+    "global_config": "ai_applicability_data/global_solveit_config.py",
+
+    "extensions":
+    {
+        "AI Applicability": {
+            "folder_path": "ai_applicability_data",
+            "description": "AI applicability review of digital forensic techniques, categorised by maturity level"
+        }
+    },
+
+    "technique_fields": {
+        "id": true,
+        "name": true,
+        "description": true,
+        "synonyms": false,
+        "details": false,
+        "subtechniques": true,
+        "examples": false,
+        "weaknesses": false,
+        "CASE_input_classes": false,
+        "CASE_output_classes": false,
+        "references": false
+    },
+
+    "weakness_fields":
+    {
+        "id": true,
+        "name": true,
+        "INCOMP": false,
+        "INAC-EX": false,
+        "INAC-AS": false,
+        "INAC-ALT": false,
+        "INAC-COR": false,
+        "MISINT": false,
+        "mitigations": false,
+        "references": false
+    },
+
+    "mitigation_fields":
+    {
+        "id": true,
+        "name": true,
+        "technique": false,
+        "references": false
+    }
+}

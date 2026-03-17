@@ -18,7 +18,7 @@ import urllib.request
 from pathlib import Path
 
 
-def update_extension(folder_path):
+def update_extension(folder_path, auto_confirm=False):
     """
     Updates an extension folder by creating folders for new techniques/weaknesses/mitigations
     without touching any existing data.
@@ -133,11 +133,13 @@ def update_extension(folder_path):
 
     # Ask for user confirmation
     print(f"{'='*60}")
-    response = input(f"Proceed with creating {total_new} new folders? (yes/no): ").strip().lower()
-
-    if response not in ['yes', 'y']:
-        print("\n[CANCELLED] Update cancelled by user.")
-        sys.exit(0)
+    if auto_confirm:
+        print(f"Auto-confirmed (--yes flag): creating {total_new} new folders.")
+    else:
+        response = input(f"Proceed with creating {total_new} new folders? (yes/no): ").strip().lower()
+        if response not in ['yes', 'y']:
+            print("\n[CANCELLED] Update cancelled by user.")
+            sys.exit(0)
 
     # Second pass: actually create the folders
     print(f"\n{'='*60}")
@@ -185,9 +187,15 @@ def main():
         help='Path to the existing extension folder to update'
     )
 
+    parser.add_argument(
+        '--yes',
+        action='store_true',
+        help='Skip confirmation prompt (for CI/automated use)'
+    )
+
     args = parser.parse_args()
 
-    update_extension(args.path)
+    update_extension(args.path, auto_confirm=args.yes)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
 name: Build SOLVE-IT-X to HTML in docs folder
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -19,8 +21,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - name: Run build script
-        run: python build_solve-it-x.py
+        run: python build_solve-it-x.py ai_applicability_review
 
       - name: Commit updated docs
         if: github.ref == 'refs/heads/main'
