@@ -1,0 +1,47 @@
+{
+    "global_config": "demo_extension_data/global_solveit_config.py",
+
+    "extensions":
+    {
+        "Demo extension": {
+            "folder_path": "demo_extension_data",
+            "description": "A simple demo extension that adds extras data to techniques"
+        }
+    },
+
+    "technique_fields": {
+        "id": true,
+        "name": true,
+        "description": true,
+        "synonyms": true,
+        "details": true,
+        "subtechniques": true,
+        "examples": true,
+        "weaknesses": true,
+        "CASE_input_classes": true,
+        "CASE_output_classes": true,
+        "references": true
+    },
+
+    "weakness_fields":
+    {
+        "id": true,
+        "name": true,
+        "INCOMP": true,
+        "INAC-EX": true,
+        "INAC-AS": true,
+        "INAC-ALT": true,
+        "INAC-COR": true,
+        "MISINT": true,
+        "mitigations": true,
+        "references": true
+    },
+
+    "mitigation_fields":
+    {
+        "id": true,
+        "name": true,
+        "technique": true,
+        "references": true
+    }
+}
