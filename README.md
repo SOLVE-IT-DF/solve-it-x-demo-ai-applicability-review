@@ -50,7 +50,7 @@ Unassessed techniques have an empty list: `{"assessments": []}`.
 Each technique folder contains category subfolders where you can drop citation files:
 
 ```
-ai_applicability_review/ai_applicability_data/techniques/
+examples/ai_applicability_data/techniques/
   DFT-1001/
     extension_data.json   # assessment history
     ac-idea/
@@ -130,7 +130,7 @@ Requires Python 3 and `pybtex` (`pip install pybtex`). Using a virtual environme
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python3 build_solve-it-x.py ai_applicability_review
+python3 build_solve-it-x.py
 ```
 
 This clones the main SOLVE-IT repo, copies in the extension data, reads all `.bib`/`.txt` files from category subfolders at build time, generates the HTML viewer and report, and places both in `docs/`.
@@ -140,7 +140,7 @@ The included GitHub Actions workflow (`build.yml`) builds automatically on push 
 ## Repository structure
 
 ```
-ai_applicability_review/
+examples/
   extension_config.json                   # Extension registration and field visibility
   ai_applicability_data/
     extension_code.py                     # Rendering logic (HTML, Markdown, Excel)
@@ -176,14 +176,14 @@ The original AI applicability data was maintained as BibTeX files in [solve-it-a
 ```bash
 python3 scripts/migrate_bibtex_to_json.py \
     --source /path/to/solve-it-ai-applications/data \
-    --target ./ai_applicability_review/ai_applicability_data/techniques
+    --target ./examples/ai_applicability_data/techniques
 ```
 
 ## Updating when SOLVE-IT adds new techniques
 
 ```bash
 # 1. Create empty folders for any new SOLVE-IT entries
-python3 scripts/update-solve-it-x.py --path ai_applicability_review/ai_applicability_data
+python3 scripts/update-solve-it-x.py --path examples/ai_applicability_data
 
 # 2. Initialise them with extension_data.json and category subfolders
 python3 scripts/init-new-techniques.py

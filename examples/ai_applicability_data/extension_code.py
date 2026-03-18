@@ -773,12 +773,6 @@ def get_html_generic(kb=None):
     )
 
     return (
-        '<div style="background:#d69e2e;padding:6px 16px;'
-        'font-size:12px;font-weight:500;color:#1a1a1a;text-align:center;margin-bottom:6px">'
-        'This is a <strong>SOLVE-IT-X extension</strong> to the '
-        '<a href="https://github.com/SOLVE-IT-DF/solve-it" style="color:#1a1a1a;font-weight:700;text-decoration:underline">SOLVE-IT repository</a> '
-        'and there may be deviations from the standard content.'
-        '</div>'
         '<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 14px;'
         'font-size:.82rem;color:#1e40af;display:flex;gap:16px;align-items:center;flex-wrap:wrap">'
         '<strong>AI Applicability Review</strong>'

@@ -23,7 +23,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Sync technique/weakness/mitigation folders from SOLVE-IT
-        run: python scripts/update-solve-it-x.py --path ai_applicability_review/ai_applicability_data --yes
+        run: python scripts/update-solve-it-x.py --path examples/ai_applicability_data --yes
 
       - name: Initialise any new technique folders
         run: python scripts/init-new-techniques.py
@@ -32,7 +32,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ai_applicability_review/
+          git add examples/
           git diff --cached --quiet && echo "No new entries from SOLVE-IT" || {
             git commit -m "Sync: add new techniques/weaknesses/mitigations from SOLVE-IT"
             git push

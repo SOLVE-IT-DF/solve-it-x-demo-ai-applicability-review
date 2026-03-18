@@ -17,7 +17,7 @@ Run this after update-solve-it-x.py to prepare newly added techniques.
 
 Usage:
     python3 scripts/init-new-techniques.py
-    python3 scripts/init-new-techniques.py --path ./ai_applicability_review/ai_applicability_data/techniques
+    python3 scripts/init-new-techniques.py --path ./examples/ai_applicability_data/techniques
 """
 
 import argparse
@@ -26,7 +26,7 @@ from pathlib import Path
 
 CATEGORY_DIRS = ["ac-idea", "ac-imp", "app-env", "in-tool", "non-ai"]
 
-DEFAULT_PATH = Path(__file__).parent.parent / "ai_applicability_review" / "ai_applicability_data" / "techniques"
+DEFAULT_PATH = Path(__file__).parent.parent / "examples" / "ai_applicability_data" / "techniques"
 
 
 def init_technique(technique_dir):

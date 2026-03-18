@@ -69,6 +69,22 @@ body.custom-mode .disabled-btn {
   background: var(--gray-300);
 }
 
+/* ── Custom mode extension banner ─────────────────────────── */
+.extension-banner {
+  padding: 6px 16px;
+  background: #0e1a30;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  flex-shrink: 0;
+}
+.extension-banner a {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 /* ── Top nav ───────────────────────────────────────────────── */
 .topnav {
   background: var(--navy);
@@ -1089,6 +1105,11 @@ body.custom-mode .disabled-btn {
 </head>
 <body>
 
+<!-- ───────────────── Extension banner ───────────────── -->
+<div class="extension-banner">
+  This is a <strong>SOLVE-IT-X extension</strong> to the <a href="https://github.com/SOLVE-IT-DF/solve-it" target="_blank" rel="noopener noreferrer">SOLVE-IT repository</a> and there may be deviations from the standard content.
+</div>
+
 <!-- ───────────────── Top navigation ───────────────── -->
 <nav class="topnav">
   <a class="topnav-brand" href="https://solveit-df.org" target="_blank">
@@ -1296,7 +1317,7 @@ body.custom-mode .disabled-btn {
 
     <!-- Matrix view -->
     <div id="view-matrix" class="view">
-      <div style="background:#d69e2e;padding:6px 16px;font-size:12px;font-weight:500;color:#1a1a1a;text-align:center;margin-bottom:6px">This is a <strong>SOLVE-IT-X extension</strong> to the <a href="https://github.com/SOLVE-IT-DF/solve-it" style="color:#1a1a1a;font-weight:700;text-decoration:underline">SOLVE-IT repository</a> and there may be deviations from the standard content.</div><div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 14px;font-size:.82rem;color:#1e40af;display:flex;gap:16px;align-items:center;flex-wrap:wrap"><strong>AI Applicability Review</strong><span>Assessed: 116 (48 with data)</span><span>Recently assessed: 11</span><span>Unassessed: 55</span><span style="color:#9ca3af;font-size:.7rem">SOLVE-IT synced: 2026-03-17</span><a href="ai-applicability-report.html" style="margin-left:auto;padding:3px 10px;background:#1e40af;color:#fff;border-radius:4px;font-size:.75rem;text-decoration:none;font-weight:500">Full Report</a></div><div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:6px;padding:8px 14px;font-size:.78rem;color:#4b5563;display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:4px"><span style="color:#16a34a;font-weight:500">In Tools: 5</span><span style="color:#2563eb;font-weight:500">Academic Implementation: 9</span><span style="color:#7c3aed;font-weight:500">Academic Idea: 11</span><span style="color:#d97706;font-weight:500">Application Envisioned: 25</span></div>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 14px;font-size:.82rem;color:#1e40af;display:flex;gap:16px;align-items:center;flex-wrap:wrap"><strong>AI Applicability Review</strong><span>Assessed: 116 (48 with data)</span><span>Recently assessed: 11</span><span>Unassessed: 55</span><span style="color:#9ca3af;font-size:.7rem">SOLVE-IT synced: 2026-03-18</span><a href="ai-applicability-report.html" style="margin-left:auto;padding:3px 10px;background:#1e40af;color:#fff;border-radius:4px;font-size:.75rem;text-decoration:none;font-weight:500">Full Report</a></div><div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:6px;padding:8px 14px;font-size:.78rem;color:#4b5563;display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:4px"><span style="color:#16a34a;font-weight:500">In Tools: 5</span><span style="color:#2563eb;font-weight:500">Academic Implementation: 9</span><span style="color:#7c3aed;font-weight:500">Academic Idea: 11</span><span style="color:#d97706;font-weight:500">Application Envisioned: 25</span></div>
       <div class="matrix-container">
         <div class="matrix" id="matrix"></div>
       </div>
@@ -1320,7 +1341,7 @@ body.custom-mode .disabled-btn {
     <footer class="site-footer">
       <div class="footer-copyright">&copy; 2026 SOLVE-IT</div>
       <div class="footer-generated">
-        Generated 2026-03-17 21:44 &mdash;
+        Generated 2026-03-18 10:03 &mdash;
         <a href="https://github.com/SOLVE-IT-DF/solve-it" target="_blank">github.com/SOLVE-IT-DF/solve-it</a>
       </div>
       <div class="footer-supported">
@@ -2148,7 +2169,7 @@ function buildCreditsHtml(item) {
   const contributors = item._contributors || [];
   const reviewers = item._reviewers || [];
   if (!edits && !created && !contributors.length && !reviewers.length) return '';
-  if (edits || created || modified) {
+  if (!HIDDEN_FIELDS.has('properties') && (edits || created || modified)) {
     let rows = '';
     if (edits)    rows += `<tr><td style="color:var(--gray-500);padding:2px 12px 2px 0">Edits</td><td>${edits}</td></tr>`;
     if (created)  rows += `<tr><td style="color:var(--gray-500);padding:2px 12px 2px 0">Created</td><td>${created}</td></tr>`;
@@ -2158,13 +2179,13 @@ function buildCreditsHtml(item) {
       <table style="font-family:var(--font-mono);font-size:.82rem">${rows}</table>
     </div>`;
   }
-  if (contributors.length) {
+  if (!HIDDEN_FIELDS.has('contributors') && contributors.length) {
     html += `<div class="detail-section">
       <div class="detail-section-title">Contributors <span class="badge">${contributors.length}</span></div>
       <div class="detail-tags">${contributors.map(n => `<span class="credit-tag" data-person="${esc(n)}">${esc(n)}</span>`).join('')}</div>
     </div>`;
   }
-  if (reviewers.length) {
+  if (!HIDDEN_FIELDS.has('reviewers') && reviewers.length) {
     html += `<div class="detail-section">
       <div class="detail-section-title">Reviewers <span class="badge">${reviewers.length}</span></div>
       <div class="detail-tags">${reviewers.map(n => `<span class="credit-tag" data-person="${esc(n)}">${esc(n)}</span>`).join('')}</div>
