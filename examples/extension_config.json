@@ -27,12 +27,7 @@
     {
         "id": true,
         "name": true,
-        "INCOMP": false,
-        "INAC-EX": false,
-        "INAC-AS": false,
-        "INAC-ALT": false,
-        "INAC-COR": false,
-        "MISINT": false,
+        "categories": false,
         "mitigations": false,
         "references": false
     },
