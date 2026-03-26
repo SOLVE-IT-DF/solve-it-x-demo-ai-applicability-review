@@ -45,11 +45,11 @@
   </p>
   <div class="stats">
     <strong>Summary</strong>
-    <span>Total techniques: 172</span>
+    <span>Total techniques: 178</span>
     <span>Assessed: 116 (48 with data)</span>
     <span>Recently assessed: 11</span>
-    <span>Unassessed: 56</span>
-    <span style="color:#6b7280;font-size:.75rem">SOLVE-IT synced: 2026-03-19</span>
+    <span>Unassessed: 62</span>
+    <span style="color:#6b7280;font-size:.75rem">SOLVE-IT synced: 2026-03-26</span>
   </div>
   <div class="legend">
     <strong>Categories</strong>
@@ -83,8 +83,8 @@
 <li><a href="#dfo-1019">DFO-1019: Detect anti-forensics and other anomalies</a></li>
 <li><a href="#dfo-1008">DFO-1008: Establish identities</a></li>
 <li><a href="#dfo-1009">DFO-1009: Create visualizations</a></li>
-<li><a href="#dfo-1001">DFO-1001: Reconstruct events</a></li>
 <li><a href="#dfo-1004">DFO-1004: Conduct research</a></li>
+<li><a href="#dfo-1001">DFO-1001: Reconstruct events</a></li>
 <li><a href="#dfo-1020">DFO-1020: Produce documentation</a></li>
 
   </ul>
@@ -211,7 +211,7 @@
 </div>
 <div class="technique" id="DFT-1113">
 <h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1113: Access internal storage via bootable environment <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f0fdf4;color:#166534;border:1px solid #bbf7d0">Recently assessed (2026-03-17)</span></h3>
-<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Booting the suspected computer device into forensically-sound bootable software-write blocked operating system in order to image the disks.</p>
+<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Booting the suspected computer device into an alternative operating system in order to image the attached disks.</p>
 <div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2026-03-17 (Chris Hargreaves)</span> </div>
 <p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
 </div>
@@ -292,7 +292,7 @@
 <p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
 </div>
 <div class="technique" id="DFT-1032">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1032: Side channel <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1032: Obtain encryption key information using side channel attacks <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
 <div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
 <div style="margin-bottom:6px">
 <div style="font-size:.8rem;font-weight:600;color:#2563eb;margin-bottom:2px">Academic Implementation</div>
@@ -369,7 +369,7 @@
 </div>
 <div class="technique" id="DFT-1002">
 <h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1002: Disk imaging <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
-<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Copying of sectors from a storage media, typically LBA~0~ to LBA~max~ to a bitstream that can be stored in a image format (T1025). </p>
+<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Copying of sectors from a storage media, typically LBA~0~ to LBA~max~ to a bitstream that can be stored in a image format (DFT-1025).</p>
 <div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
 <p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
 </div>
@@ -431,18 +431,6 @@
 <div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
 <p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
 </div>
-<div class="technique" id="DFT-1015">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1015: Privacy preserving selective extraction <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
-<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Previewing a data source and selecting a subset of the data for collection into a container such as a tar/zip file or a forensic image format for the purposes of protecting the privacy of the complainant or witness.</p>
-<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
-<div style="margin-bottom:6px">
-<div style="font-size:.8rem;font-weight:600;color:#7c3aed;margin-bottom:2px">Academic Idea</div>
-<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:.82rem;margin-bottom:3px">
-<div>Perhaps AI could match relevant content without human review to provide some privacy protections <span style="color:#6b7280">(Webb et al 2024)</span></div>
-<div style="font-size:.72rem;color:#9ca3af;margin-top:2px">Webb, Helena and Fitzroy-Dale, Nicholas and Aqeel, Saamiya and Piskopani, Anna Maria and Stafford-Fraser, Quentin and Nikolaou, Christos and Dowthwaite, Liz and Mcauley, Derek and Hargreaves, Christoper, (2024), <em>Responsible AI in policing</em>, Proceedings of the Second International Symposium on Trustworthy Autonomous Systems, pp. 1--5</div>
-</div>
-</div>
-</div>
 <div class="technique" id="DFT-1162">
 <h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1162: Read data from a device via In-System Programming (ISP) <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
 <p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
@@ -476,6 +464,18 @@
 <div style="font-size:.8rem;font-weight:600;color:#d97706;margin-bottom:2px">Application Envisioned</div>
 <div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:.82rem;margin-bottom:3px">
 <div>Use of AI to scan for relevant content, determining content prioritised for acquisition</div>
+</div>
+</div>
+</div>
+<div class="technique" id="DFT-1015">
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1015: Privacy preserving selective extraction <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
+<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Previewing a data source and selecting a subset of the data for collection into a container such as a tar/zip file or a forensic image format for the purposes of protecting the privacy of the complainant or witness.</p>
+<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
+<div style="margin-bottom:6px">
+<div style="font-size:.8rem;font-weight:600;color:#7c3aed;margin-bottom:2px">Academic Idea</div>
+<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:.82rem;margin-bottom:3px">
+<div>Perhaps AI could match relevant content without human review to provide some privacy protections <span style="color:#6b7280">(Webb et al 2024)</span></div>
+<div style="font-size:.72rem;color:#9ca3af;margin-top:2px">Webb, Helena and Fitzroy-Dale, Nicholas and Aqeel, Saamiya and Piskopani, Anna Maria and Stafford-Fraser, Quentin and Nikolaou, Christos and Dowthwaite, Liz and Mcauley, Derek and Hargreaves, Christoper, (2024), <em>Responsible AI in policing</em>, Proceedings of the Second International Symposium on Trustworthy Autonomous Systems, pp. 1--5</div>
 </div>
 </div>
 </div>
@@ -725,7 +725,7 @@
 </div>
 </div>
 <div class="technique" id="DFT-1116">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1116: Determine connected devices <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1116: Extract references to connected devices <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
 <p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Examine artifacts and extract indicators of devices that have been connected to the target device.</p>
 <p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
 </div>
@@ -989,6 +989,11 @@
 <p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">This technique takes a set of files and determines which are related to a specified application.</p>
 <p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
 </div>
+<div class="technique" id="DFT-1121">
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1121: Keyword indexing <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
+<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Extracting strings from a data source and adding them to an index for subsequent searching.</p>
+<p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
+</div>
 </section>
 <section class="objective" id="dfo-1012">
 <h2 style="margin:24px 0 4px 0;padding-bottom:4px;border-bottom:2px solid #e5e7eb">DFO-1012: Locate potentially relevant content</h2>
@@ -1033,11 +1038,6 @@
 <div class="technique" id="DFT-1124">
 <h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1124: Keyword search (indexed) <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
 <p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Searching for keywords within a generated index of data in a case</p>
-<p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
-</div>
-<div class="technique" id="DFT-1121">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1121: Keyword indexing <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
-<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Extracting strings from a data source and adding them to an index for subsequent searching</p>
 <p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
 </div>
 <div class="technique" id="DFT-1122">
@@ -1228,6 +1228,47 @@
 <p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
 </div>
 </section>
+<section class="objective" id="dfo-1004">
+<h2 style="margin:24px 0 4px 0;padding-bottom:4px;border-bottom:2px solid #e5e7eb">DFO-1004: Conduct research</h2>
+<p style="color:#4b5563;margin:0 0 12px 0">Conduct research to gain additional knowledge to support the acquisition, extraction, or interpretation of digital evidence.</p>
+<div class="technique" id="DFT-1090">
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1090: Experimentation <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
+<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
+<div style="margin-bottom:6px">
+<div style="font-size:.8rem;font-weight:600;color:#7c3aed;margin-bottom:2px">Academic Idea</div>
+<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:.82rem;margin-bottom:3px">
+<div>Identifying relevant traces from a set of actions carried out in an experiment</div>
+</div>
+</div>
+</div>
+<div class="technique" id="DFT-1095">
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1095: Instrumentation <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
+<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
+<p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
+</div>
+<div class="technique" id="DFT-1089">
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1089: Source code review <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
+<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
+<div style="margin-bottom:6px">
+<div style="font-size:.8rem;font-weight:600;color:#7c3aed;margin-bottom:2px">Academic Idea</div>
+<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:.82rem;margin-bottom:3px">
+<div>Explaining source code operations <span style="color:#6b7280">(Chen et al 2023)</span></div>
+<div style="font-size:.72rem;color:#9ca3af;margin-top:2px">Chen, Eason and Huang, Ray and Chen, Han-Shin and Tseng, Yuen-Hsien and Li, Liang-Yi, (2023), <em>GPTutor: a ChatGPT-powered programming tool for code explanation</em>, International Conference on Artificial Intelligence in Education, pp. 321--327</div>
+</div>
+</div>
+</div>
+<div class="technique" id="DFT-1101">
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1101: Cell site survey <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
+<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Taking measurements to assess which cells actually provide service at a specific location (adapted from Tart et al 2012).</p>
+<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
+<p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
+</div>
+<div class="technique" id="DFT-1119">
+<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1119: Automatically scan for artifact changes caused by app updates <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
+<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Monitor every version change of an application to determine if there are changes to the way the app stores data</p>
+<p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
+</div>
+</section>
 <section class="objective" id="dfo-1001">
 <h2 style="margin:24px 0 4px 0;padding-bottom:4px;border-bottom:2px solid #e5e7eb">DFO-1001: Reconstruct events</h2>
 <p style="color:#4b5563;margin:0 0 12px 0">Use available digital evidence to formulate and test hypotheses about events.</p>
@@ -1272,47 +1313,6 @@
 <div class="technique" id="DFT-1156">
 <h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1156: Functional-based event reconstruction <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
 <p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Reconstructing the configuration or capabilities of a system at the time of an event</p>
-<p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
-</div>
-</section>
-<section class="objective" id="dfo-1004">
-<h2 style="margin:24px 0 4px 0;padding-bottom:4px;border-bottom:2px solid #e5e7eb">DFO-1004: Conduct research</h2>
-<p style="color:#4b5563;margin:0 0 12px 0">Conduct research to gain additional knowledge to support the acquisition, extraction, or interpretation of digital evidence.</p>
-<div class="technique" id="DFT-1090">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1090: Experimentation <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
-<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
-<div style="margin-bottom:6px">
-<div style="font-size:.8rem;font-weight:600;color:#7c3aed;margin-bottom:2px">Academic Idea</div>
-<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:.82rem;margin-bottom:3px">
-<div>Identifying relevant traces from a set of actions carried out in an experiment</div>
-</div>
-</div>
-</div>
-<div class="technique" id="DFT-1095">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1095: Instrumentation <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
-<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
-<p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
-</div>
-<div class="technique" id="DFT-1089">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1089: Source code review <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
-<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
-<div style="margin-bottom:6px">
-<div style="font-size:.8rem;font-weight:600;color:#7c3aed;margin-bottom:2px">Academic Idea</div>
-<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:.82rem;margin-bottom:3px">
-<div>Explaining source code operations <span style="color:#6b7280">(Chen et al 2023)</span></div>
-<div style="font-size:.72rem;color:#9ca3af;margin-top:2px">Chen, Eason and Huang, Ray and Chen, Han-Shin and Tseng, Yuen-Hsien and Li, Liang-Yi, (2023), <em>GPTutor: a ChatGPT-powered programming tool for code explanation</em>, International Conference on Artificial Intelligence in Education, pp. 321--327</div>
-</div>
-</div>
-</div>
-<div class="technique" id="DFT-1101">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1101: Cell site survey <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe">Previously assessed (2025-04-03)</span></h3>
-<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Taking measurements to assess which cells actually provide service at a specific location (adapted from Tart et al 2012).</p>
-<div style="font-size:.75rem;color:#6b7280;margin-bottom:6px">Assessments: <span>2025-04-03 (Chris Hargreaves)</span> </div>
-<p style="color:#9ca3af;font-style:italic;font-size:.85rem">No AI applicability identified during review.</p>
-</div>
-<div class="technique" id="DFT-1119">
-<h3 style="margin:0 0 4px 0;font-size:1rem">DFT-1119: Automatically scan for artifact changes caused by app updates <span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;background:#f9fafb;color:#4b5563;border:1px solid #d1d5db">Unassessed</span></h3>
-<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">Monitor every version change of an application to determine if there are changes to the way the app stores data</p>
 <p style="color:#6b7280;font-style:italic;font-size:.85rem">This technique has not yet been assessed for AI applicability.</p>
 </div>
 </section>
