@@ -36,7 +36,7 @@ def setup_extensions_base_folder(folder_path, include_extension=None):
     print(f"Copied extension_config_template.json to {target_config_file}")
 
     # Copy default global_solveit_config.py
-    global_config_template = script_dir.parent / "examples" / "global_solveit_config.py"
+    global_config_template = script_dir.parent / "extensions" / "global_solveit_config.py"
     if global_config_template.exists():
         target_global_config = target_folder / "global_solveit_config.py"
         shutil.copy2(global_config_template, target_global_config)

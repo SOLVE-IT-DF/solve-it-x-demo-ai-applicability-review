@@ -20,7 +20,10 @@
         "weaknesses": false,
         "CASE_input_classes": false,
         "CASE_output_classes": false,
-        "references": false
+        "references": false,
+         "properties": false,                                                                                          
+        "contributors": false,
+        "reviewers": false
     },
 
     "weakness_fields":

@@ -161,6 +161,12 @@ def _status_colours(ext):
 
 def _parse_bib_file(filepath):
     """Parse a .bib file and return a dict with extracted fields."""
+    # Read raw content for "Copy BibTeX" support
+    try:
+        raw_bib = Path(filepath).read_text(encoding="utf-8").strip()
+    except Exception:
+        raw_bib = ""
+
     parser = bibtex.Parser()
     try:
         bib_data = parser.parse_file(str(filepath))
@@ -185,6 +191,7 @@ def _parse_bib_file(filepath):
             "venue": venue,
             "pages": fields.get("pages"),
             "publisher": fields.get("publisher"),
+            "raw_bib": raw_bib,
         }
     return None
 
@@ -228,8 +235,26 @@ def _parse_txt_file(filepath):
 _entries_cache = {}
 
 
+def _parse_entry_json(filepath):
+    """Parse an entry .json file and return the parsed dict, or None."""
+    try:
+        import json as _json
+        data = _json.loads(Path(filepath).read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else None
+    except Exception as e:
+        logger.warning("Error reading .json file %s: %s", filepath, e)
+        return None
+
+
 def _read_entries_for_technique(t_id):
-    """Read all .bib and .txt files from category subfolders for a technique."""
+    """Read all .json/.bib/.txt files from category subfolders for a technique.
+
+    A .json file provides the note and future metadata.  If a .bib file with
+    the same stem exists alongside it, the citation fields come from the .bib
+    and the note comes from the .json.  A standalone .json (no matching .bib)
+    is treated as a note-only entry.  A standalone .bib still falls back to its
+    own ``note`` field for backwards compatibility.
+    """
     if t_id in _entries_cache:
         return _entries_cache[t_id]
 
@@ -240,15 +265,46 @@ def _read_entries_for_technique(t_id):
         entries = []
         cat_path = technique_dir / dir_name
         if cat_path.is_dir():
-            for f in sorted(cat_path.iterdir()):
+            files = sorted(cat_path.iterdir())
+            # Index .json files by stem for pairing with .bib
+            json_by_stem = {}
+            for f in files:
+                if f.suffix == ".json":
+                    json_by_stem[f.stem] = f
+
+            seen_stems = set()
+            for f in files:
                 if f.suffix == ".bib":
                     parsed = _parse_bib_file(f)
                     if parsed:
+                        # Override note with .json if present
+                        json_file = json_by_stem.get(f.stem)
+                        if json_file:
+                            json_data = _parse_entry_json(json_file)
+                            if json_data and json_data.get("notes"):
+                                parsed["note"] = json_data["notes"]
+                            seen_stems.add(f.stem)
                         entries.append(parsed)
                 elif f.suffix == ".txt":
                     parsed = _parse_txt_file(f)
                     if parsed:
                         entries.append(parsed)
+
+            # Standalone .json files (no matching .bib)
+            for stem, json_file in sorted(json_by_stem.items()):
+                if stem not in seen_stems:
+                    json_data = _parse_entry_json(json_file)
+                    if json_data and json_data.get("notes"):
+                        entries.append({
+                            "note": json_data["notes"],
+                            "author": None,
+                            "year": None,
+                            "title": None,
+                            "venue": None,
+                            "pages": None,
+                            "publisher": None,
+                        })
+
         categories[cat_key] = entries
 
     _entries_cache[t_id] = categories
@@ -260,57 +316,44 @@ def _count_entries(ai_entries):
     return sum(len(ai_entries.get(cat, [])) for cat in CATEGORY_ORDER)
 
 
-def _format_citation(entry):
-    """Format an inline citation from an entry dict."""
-    author_str = entry.get('author')
-    year = entry.get('year')
 
-    if not author_str and not year:
-        return ""
+def _format_harvard(entry):
+    """Format a Harvard-style plaintext citation from an entry dict."""
+    parts = []
+    if entry.get('author'):
+        parts.append(entry['author'])
+    if entry.get('year'):
+        parts.append(f"({entry['year']})")
+    if entry.get('title'):
+        parts.append(entry['title'])
+    if entry.get('venue'):
+        parts.append(entry['venue'])
+    if entry.get('pages'):
+        parts.append(f"pp. {entry['pages']}")
+    return ", ".join(parts) if parts else ""
 
-    if author_str:
-        authors = [a.strip() for a in author_str.split(' and ')]
-        last_names = []
-        for a in authors:
-            if ',' in a:
-                last_names.append(a.split(',')[0].strip())
-            else:
-                parts = a.strip().split()
-                last_names.append(parts[-1] if parts else a)
 
-        if len(last_names) == 1:
-            name_part = last_names[0]
-        elif len(last_names) == 2:
-            name_part = f"{last_names[0]} & {last_names[1]}"
-        else:
-            name_part = f"{last_names[0]} et al"
-    else:
-        name_part = ""
-
-    if year:
-        return f"({name_part} {year})" if name_part else f"({year})"
-    return f"({name_part})" if name_part else ""
+def _esc_attr(s):
+    """Escape a string for safe inclusion in an HTML data-* attribute."""
+    return escape(s).replace("'", "&#39;").replace('"', "&quot;").replace("\n", "&#10;")
 
 
 def _render_entry_html(entry):
-    """Render a single AI applicability entry as HTML."""
+    """Render a single AI applicability entry as HTML, with copy buttons."""
     note = escape(entry.get('note', ''))
-    citation = escape(_format_citation(entry))
     title = entry.get('title')
     venue = entry.get('venue')
     author = entry.get('author')
     year = entry.get('year')
     pages = entry.get('pages')
     ref_text = entry.get('reference_text')
+    raw_bib = entry.get('raw_bib', '')
 
     html = (
         '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;'
         'padding:6px 10px;font-size:.82rem;margin-bottom:3px">\n'
-        f'<div>{note}'
+        f'<div>{note}</div>\n'
     )
-    if citation:
-        html += f' <span style="color:#6b7280">{citation}</span>'
-    html += '</div>\n'
 
     ref_parts = []
     if author:
@@ -324,11 +367,28 @@ def _render_entry_html(entry):
     if pages:
         ref_parts.append(f'pp. {escape(pages)}')
 
+    harvard_text = _format_harvard(entry)
+
     if ref_parts:
         html += (
-            f'<div style="font-size:.72rem;color:#9ca3af;margin-top:2px">'
-            f'{", ".join(ref_parts)}</div>\n'
+            f'<div style="display:flex;align-items:baseline;gap:6px;margin-top:2px">'
+            f'<div style="font-size:.72rem;color:#9ca3af;flex:1">'
+            f'{", ".join(ref_parts)}</div>'
+            f'<span style="cursor:pointer;opacity:.4;font-size:.72rem" '
+            f'title="Copy citation text" '
+            f'data-cite="{_esc_attr(harvard_text)}" '
+            f'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.4" '
+            f'onclick="{_COPY_ONCLICK}">&#128203;</span>'
         )
+        if raw_bib:
+            html += (
+                f'<span style="cursor:pointer;opacity:.4;font-size:.72rem" '
+                f'title="Copy BibTeX" '
+                f'data-cite="{_esc_attr(raw_bib)}" '
+                f'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.4" '
+                f'onclick="{_COPY_ONCLICK}">&#128218;</span>'
+            )
+        html += '</div>\n'
     elif ref_text:
         html += (
             f'<div style="font-size:.72rem;color:#9ca3af;margin-top:2px">'
@@ -337,6 +397,26 @@ def _render_entry_html(entry):
 
     html += '</div>\n'
     return html
+
+
+# Inline onclick handler for copy buttons.  Must be fully self-contained
+# because the viewer injects extension HTML via innerHTML (so <script> tags
+# won't execute).  The handler reads the text from the button's data-cite
+# attribute and shows a brief toast notification.
+_COPY_ONCLICK = (
+    "navigator.clipboard.writeText(this.dataset.cite).then("
+    "(function(m){return function(){"
+    "var d=document.createElement('div');d.textContent=m;"
+    "d.style.cssText='position:fixed;bottom:20px;left:50%;"
+    "transform:translateX(-50%);background:#1e293b;color:#fff;"
+    "padding:8px 16px;border-radius:6px;font-size:.82rem;"
+    "z-index:9999;opacity:0;transition:opacity .3s';"
+    "document.body.appendChild(d);"
+    "requestAnimationFrame(function(){d.style.opacity=1});"
+    "setTimeout(function(){d.style.opacity=0;"
+    "setTimeout(function(){d.remove()},300)},1500)"
+    "}})(this.title==='Copy BibTeX'?'BibTeX copied':'Citation copied'))"
+)
 
 
 def _render_assessments_html(ext):
@@ -426,12 +506,8 @@ def get_markdown_for_technique(t_id, kb=None):
             out += f"### {CATEGORY_LABELS[cat]}\n\n"
             for entry in entries:
                 note = entry.get('note', '')
-                citation = _format_citation(entry)
                 ref_text = entry.get('reference_text')
-                out += f"- {note}"
-                if citation:
-                    out += f" {citation}"
-                out += "\n"
+                out += f"- {note}\n"
                 title = entry.get('title')
                 venue = entry.get('venue')
                 if title:
@@ -670,6 +746,7 @@ def _generate_report(kb):
   @media print {{
     .technique {{ break-inside: avoid; }}
     section.objective {{ break-before: page; }}
+    .aicopy {{ display:none; }}
   }}
 </style>
 </head>

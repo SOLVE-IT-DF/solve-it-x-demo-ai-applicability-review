@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 CATEGORY_DIRS = ["ac-idea", "ac-imp", "in-tool", "non-ai"]
-DEFAULT_TECHNIQUES_DIR = Path(__file__).parent.parent / "examples" / "ai_applicability_data" / "techniques"
+DEFAULT_TECHNIQUES_DIR = Path(__file__).parent.parent / "extensions" / "ai_applicability_data" / "techniques"
 
 
 def assess_technique(t_id, techniques_dir, assessor, assessment_date):

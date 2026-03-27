@@ -1,8 +1,18 @@
 # SOLVE-IT-X: AI Applicability Review
 
-A [SOLVE-IT-X](https://github.com/SOLVE-IT-DF/solve-it-x) extension that overlays an **AI applicability review** onto the [SOLVE-IT](https://github.com/SOLVE-IT-DF/solve-it) digital forensic knowledge base.
+## Introduction
+This is a [SOLVE-IT-X](https://github.com/SOLVE-IT-DF/solve-it-x) extension that overlays an **AI applicability review** onto the [SOLVE-IT](https://github.com/SOLVE-IT-DF/solve-it) digital forensic knowledge base.
 
-The HTML version of this SOLVE-IT-X is available [here](https://solve-it-df.github.io/solve-it-x-demo-ai-applicability-review/).
+
+This replaced the [original repository](https://github.com/SOLVE-IT-DF/solve-it-applications-ai-review) based on the work in:
+
+
+```Hargreaves, C., van Beek, H., Casey, E., SOLVE-IT: A proposed digital forensic knowledge base inspired by MITRE ATT&CK, Forensic Science International: Digital Investigation, Volume 52, Supplement, 2025, 301864, ISSN 2666-2817, https://doi.org/10.1016/j.fsidi.2025.301864```
+
+
+The HTML version of this SOLVE-IT-X extension is available [here](https://solve-it-df.github.io/solve-it-x-demo-ai-applicability-review/).
+
+## Content
 
 For each SOLVE-IT technique, the review records whether AI has been applied (or could be applied), categorised by maturity level:
 
@@ -11,8 +21,11 @@ For each SOLVE-IT technique, the review records whether AI has been applied (or 
 | **In Tools** | AI capability already integrated into forensic tools |
 | **Academic Implementation** | Published academic work with a working implementation |
 | **Academic Idea** | Proposed in academic literature but not yet implemented |
+| **Non-AI** | Assessed and determined that a non-AI-based process is likely sufficient |
 
 Each entry includes the AI relevance note and, where applicable, a supporting citation.
+
+Note the distinction between **Non-AI** and **Unassessed**: a Non-AI classification means someone has explicitly reviewed the technique and concluded AI is not needed, whereas an unassessed technique simply has not been reviewed yet.
 
 ## Outputs
 
@@ -51,11 +64,12 @@ Unassessed techniques have an empty list: `{"assessments": []}`.
 Each technique folder contains category subfolders where you can drop citation files:
 
 ```
-examples/ai_applicability_data/techniques/
+extensions/ai_applicability_data/techniques/
   DFT-1001/
     extension_data.json   # assessment history
     ac-idea/
-      1.bib               # BibTeX entry
+      1.json              # AI relevance description
+      1.bib               # BibTeX citation (optional)
     ac-imp/
     in-tool/
     non-ai/
@@ -63,36 +77,29 @@ examples/ai_applicability_data/techniques/
 
 Two file formats are supported:
 
-### BibTeX (`.bib`)
+### JSON description (`.json`) + BibTeX citation (`.bib`)
 
-Standard BibTeX with a `note` field containing the AI relevance description:
+The preferred format uses a pair of files with the same stem. The `.json` file contains the AI relevance description and the `.bib` file contains the citation:
 
+**`1.json`**
+```json
+{
+    "notes": "Identifying the most relevant devices from a set could potentially be improved with AI"
+}
+```
+
+**`1.bib`**
 ```bibtex
 @inproceedings{du2020sok,
   title={SoK: Exploring the state of the art and the future potential of AI in digital forensic investigation},
   author={Du, Xiaoyu and Hargreaves, Chris and Sheppard, John and others},
   booktitle={Proceedings of the 15th ARES conference},
   pages={1--10},
-  year={2020},
-  note="Identifying the most relevant devices from a set could potentially be improved with AI"
+  year={2020}
 }
 ```
 
-### Plaintext (`.txt`)
-
-A lightweight alternative -- the note on the first line(s), optionally followed by `---` and a Harvard-style reference:
-
-```
-Perhaps speaker identification could be improved with AI
----
-Smith, J. and Jones, A., 2024. Automated forensic triage using machine learning. Digital Investigation, 45, pp.301-315.
-```
-
-If no reference is needed, just the note text is sufficient:
-
-```
-Perhaps detection of AI generated speech
-```
+A standalone `.json` file (no matching `.bib`) is also valid when there is no formal citation.
 
 After adding files, rebuild to see the changes.
 
@@ -124,23 +131,20 @@ Or edit `extension_data.json` directly -- just append to the `assessments` list:
 
 ## Building
 
-Requires Python 3 and `pybtex` (`pip install pybtex`). Using a virtual environment is recommended:
+Requires Python 3, pip, and git. The build script handles all other dependencies automatically (it clones the main SOLVE-IT repo and installs its requirements via pip).
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
 python3 build_solve-it-x.py
 ```
 
-This clones the main SOLVE-IT repo, copies in the extension data, reads all `.bib`/`.txt` files from category subfolders at build time, generates the HTML viewer and report, and places both in `docs/`.
+This clones the main SOLVE-IT repo, copies in the extension data, reads all `.json`/`.bib` files from category subfolders at build time, generates the HTML viewer and report, and places both in `docs/`.
 
 The included GitHub Actions workflow (`build.yml`) builds automatically on push to main.
 
 ## Repository structure
 
 ```
-examples/
+extensions/
   extension_config.json                   # Extension registration and field visibility
   ai_applicability_data/
     extension_code.py                     # Rendering logic (HTML, Markdown, Excel)
@@ -148,7 +152,8 @@ examples/
     techniques/
       DFT-1001/
         extension_data.json               # Assessment history
-        ac-idea/1.bib                     # AI applicability entries as .bib or .txt
+        ac-idea/1.json                    # AI relevance description
+        ac-idea/1.bib                     # BibTeX citation (paired with .json)
         ac-imp/
         in-tool/
         non-ai/
@@ -161,28 +166,17 @@ scripts/
   init-new-techniques.py                 # Populate new technique folders with subfolders
   init-solve-it-x.py                     # Scaffold new extensions
   update-solve-it-x.py                   # Add folders for newly added SOLVE-IT entries
-  migrate_bibtex_to_json.py              # One-time migration from the original BibTeX source
 build_solve-it-x.py                      # Main build orchestration
 docs/
   index.html                             # Generated interactive viewer
   ai-applicability-report.html           # Generated standalone report
 ```
 
-## Migration from the original source
-
-The original AI applicability data was maintained as BibTeX files in [solve-it-ai-applications](https://github.com/SOLVE-IT-DF/solve-it-ai-applications). The migration script copies those `.bib` files into the category subfolders and generates metadata in `extension_data.json`:
-
-```bash
-python3 scripts/migrate_bibtex_to_json.py \
-    --source /path/to/solve-it-ai-applications/data \
-    --target ./examples/ai_applicability_data/techniques
-```
-
 ## Updating when SOLVE-IT adds new techniques
 
 ```bash
 # 1. Create empty folders for any new SOLVE-IT entries
-python3 scripts/update-solve-it-x.py --path examples/ai_applicability_data
+python3 scripts/update-solve-it-x.py --path extensions/ai_applicability_data
 
 # 2. Initialise them with extension_data.json and category subfolders
 python3 scripts/init-new-techniques.py
