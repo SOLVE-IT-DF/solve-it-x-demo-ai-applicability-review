@@ -4,6 +4,7 @@ import sys
 from datetime import date, timedelta
 from html import escape
 from pathlib import Path
+from urllib.parse import quote
 
 from pybtex.database.input import bibtex
 from pybtex.scanner import TokenRequired
@@ -875,9 +876,13 @@ def get_html_for_technique(t_id, kb=None):
         return ""
 
     if not _is_assessed(ext):
+        technique = kb.get_technique(t_id) if kb else None
+        t_name = technique.get('name', '') if technique else ''
+        issue_title = quote(f"Add entry to {t_id} {t_name}".strip())
         issue_url = (
             f"https://github.com/SOLVE-IT-DF/solve-it-x-demo-ai-applicability-review"
             f"/issues/new?template=add-ai-entry.yml&technique_id={escape(t_id)}"
+            f"&title={issue_title}"
         )
         return (
             '<div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:6px;padding:8px 12px;'
@@ -926,10 +931,14 @@ def get_html_for_technique(t_id, kb=None):
             '</div>'
         )
 
-    # "Add entry" button linking to the GitHub issue form, pre-filled with technique ID
+    # "Add entry" button linking to the GitHub issue form, pre-filled with technique ID and title
+    technique = kb.get_technique(t_id) if kb else None
+    t_name = technique.get('name', '') if technique else ''
+    issue_title = quote(f"Add entry to {t_id} {t_name}".strip())
     issue_url = (
         f"https://github.com/SOLVE-IT-DF/solve-it-x-demo-ai-applicability-review"
         f"/issues/new?template=add-ai-entry.yml&technique_id={escape(t_id)}"
+        f"&title={issue_title}"
     )
     out += (
         f'<div style="margin-top:8px">'
