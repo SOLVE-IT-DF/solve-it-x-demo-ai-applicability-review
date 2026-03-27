@@ -1,5 +1,6 @@
 name: Add AI Applicability Entry
 description: Submit a new AI applicability entry for a digital forensic technique
+title: "Add entry: [AI entry description]"
 labels: ["ai-entry"]
 body:
   - type: input
@@ -7,7 +8,7 @@ body:
     attributes:
       label: Technique ID
       description: The SOLVE-IT technique identifier (e.g. DFT-1001)
-      placeholder: DFT-1001
+      placeholder: DFT-xxxx
     validations:
       required: true
 
@@ -38,6 +39,7 @@ body:
     attributes:
       label: BibTeX Entry
       description: BibTeX citation for the reference
+      placeholder: copy BibTeX here
       render: bibtex
     validations:
       required: true
