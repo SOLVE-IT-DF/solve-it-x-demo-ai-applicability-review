@@ -2,6 +2,8 @@
 
 A [SOLVE-IT-X](https://github.com/SOLVE-IT-DF/solve-it-x) extension that overlays an **AI applicability review** onto the [SOLVE-IT](https://github.com/SOLVE-IT-DF/solve-it) digital forensic knowledge base.
 
+The HTML version of this SOLVE-IT-X is available [here](https://solve-it-df.github.io/solve-it-x-demo-ai-applicability-review/).
+
 For each SOLVE-IT technique, the review records whether AI has been applied (or could be applied), categorised by maturity level:
 
 | Category | Description |
