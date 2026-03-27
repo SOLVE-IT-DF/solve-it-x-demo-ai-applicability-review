@@ -1,8 +1,12 @@
 name: Add AI Applicability Entry
 description: Submit a new AI applicability entry for a digital forensic technique
 title: "Add entry: [AI entry description]"
-labels: ["ai-entry"]
+labels: []
 body:
+  - type: markdown
+    attributes:
+      value: "Add the **ai-entry** label to this issue to submit it as a pull request."
+
   - type: input
     id: technique_id
     attributes:
