@@ -184,6 +184,11 @@ def _parse_bib_file(filepath):
         author_str = " and ".join(str(a) for a in authors) if authors else None
         venue = fields.get("booktitle") or fields.get("journal") or None
 
+        url = fields.get("url") or None
+        doi = fields.get("doi") or None
+        if not url and doi:
+            url = f"https://doi.org/{doi}"
+
         return {
             "note": fields.get("note"),
             "author": author_str,
@@ -192,6 +197,8 @@ def _parse_bib_file(filepath):
             "venue": venue,
             "pages": fields.get("pages"),
             "publisher": fields.get("publisher"),
+            "url": url,
+            "doi": doi,
             "raw_bib": raw_bib,
         }
     return None
@@ -340,41 +347,48 @@ def _esc_attr(s):
 
 
 def _render_entry_html(entry):
-    """Render a single AI applicability entry as HTML, with copy buttons."""
+    """Render a single AI applicability entry as HTML.
+
+    Layout order: author (year) heading, then notes, then reference details below.
+    """
     note = escape(entry.get('note', ''))
     title = entry.get('title')
     venue = entry.get('venue')
     author = entry.get('author')
     year = entry.get('year')
     pages = entry.get('pages')
+    url = entry.get('url')
     ref_text = entry.get('reference_text')
     raw_bib = entry.get('raw_bib', '')
+    harvard_text = _format_harvard(entry)
 
     html = (
         '<div style="background:#fafafa;border:1px solid #e5e7eb;border-radius:4px;'
         'padding:6px 10px;font-size:.82rem;margin-bottom:3px">\n'
-        f'<div>{note}</div>\n'
     )
 
-    ref_parts = []
+    # -- Author (year) heading with action icons --
+    author_year = []
     if author:
-        ref_parts.append(escape(author))
+        author_year.append(escape(author))
     if year:
-        ref_parts.append(f'({escape(year)})')
-    if title:
-        ref_parts.append(f'<em>{escape(title)}</em>')
-    if venue:
-        ref_parts.append(escape(venue))
-    if pages:
-        ref_parts.append(f'pp. {escape(pages)}')
+        author_year.append(f'({escape(year)})')
 
-    harvard_text = _format_harvard(entry)
-
-    if ref_parts:
+    if author_year:
         html += (
-            f'<div style="display:flex;align-items:baseline;gap:6px;margin-top:2px">'
-            f'<div style="font-size:.72rem;color:#9ca3af;flex:1">'
-            f'{", ".join(ref_parts)}</div>'
+            f'<div style="display:flex;align-items:baseline;gap:6px">'
+            f'<div style="font-weight:600;font-size:.82rem;flex:1">'
+            f'{" ".join(author_year)}</div>'
+        )
+        if url:
+            html += (
+                f'<a href="{escape(url)}" target="_blank" rel="noopener noreferrer" '
+                f'style="opacity:.4;font-size:.72rem;text-decoration:none" '
+                f'title="Open URL" '
+                f'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.4"'
+                f'>&#128279;</a>'
+            )
+        html += (
             f'<span style="cursor:pointer;opacity:.4;font-size:.72rem" '
             f'title="Copy citation text" '
             f'data-cite="{_esc_attr(harvard_text)}" '
@@ -390,6 +404,36 @@ def _render_entry_html(entry):
                 f'onclick="{_COPY_ONCLICK}">&#128218;</span>'
             )
         html += '</div>\n'
+
+    # -- Notes --
+    if note:
+        html += f'<div style="margin-top:2px">{note}</div>\n'
+
+    # -- Reference details (smaller, expandable) --
+    ref_parts = []
+    if title:
+        ref_parts.append(f'<em>{escape(title)}</em>')
+    if venue:
+        ref_parts.append(escape(venue))
+    if pages:
+        ref_parts.append(f'pp. {escape(pages)}')
+
+    if ref_parts:
+        html += (
+            '<details style="margin-top:4px">'
+            '<summary style="font-size:.7rem;color:#9ca3af;cursor:pointer;'
+            'user-select:none">Reference details</summary>'
+            '<div style="margin-top:4px;font-size:.7rem">'
+            f'<div style="color:#6b7280;margin-bottom:4px">{", ".join(ref_parts)}</div>'
+        )
+        if raw_bib:
+            html += (
+                f'<pre style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:3px;'
+                f'padding:6px 8px;margin:2px 0 0 0;font-size:.68rem;overflow-x:auto;'
+                f'white-space:pre-wrap;word-break:break-all">{escape(raw_bib)}</pre>'
+            )
+        html += '</div></details>\n'
+
     elif ref_text:
         html += (
             f'<div style="font-size:.72rem;color:#9ca3af;margin-top:2px">'
