@@ -875,11 +875,21 @@ def get_html_for_technique(t_id, kb=None):
         return ""
 
     if not _is_assessed(ext):
+        issue_url = (
+            f"https://github.com/SOLVE-IT-DF/solve-it-x-demo-ai-applicability-review"
+            f"/issues/new?template=add-ai-entry.yml&technique_id={escape(t_id)}"
+        )
         return (
             '<div style="background:#f9fafb;border:1px solid #d1d5db;border-radius:6px;padding:8px 12px;'
             'font-size:.82rem;color:#4b5563;margin-top:6px">'
             '<strong>[Unassessed]</strong> This technique has not yet been assessed for AI applicability.'
             '</div>'
+            f'<div style="margin-top:8px">'
+            f'<a href="{issue_url}" target="_blank" rel="noopener noreferrer" '
+            f'style="display:inline-block;padding:4px 12px;font-size:.78rem;'
+            f'color:#1e40af;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;'
+            f'text-decoration:none;font-weight:500;cursor:pointer">'
+            f'+ Add entry</a></div>'
         )
 
     out = ""
@@ -915,6 +925,20 @@ def get_html_for_technique(t_id, kb=None):
             'No AI applicability identified during review.'
             '</div>'
         )
+
+    # "Add entry" button linking to the GitHub issue form, pre-filled with technique ID
+    issue_url = (
+        f"https://github.com/SOLVE-IT-DF/solve-it-x-demo-ai-applicability-review"
+        f"/issues/new?template=add-ai-entry.yml&technique_id={escape(t_id)}"
+    )
+    out += (
+        f'<div style="margin-top:8px">'
+        f'<a href="{issue_url}" target="_blank" rel="noopener noreferrer" '
+        f'style="display:inline-block;padding:4px 12px;font-size:.78rem;'
+        f'color:#1e40af;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;'
+        f'text-decoration:none;font-weight:500;cursor:pointer">'
+        f'+ Add entry</a></div>'
+    )
 
     return out
 
