@@ -11,7 +11,6 @@ For each SOLVE-IT technique, the review records whether AI has been applied (or 
 | **In Tools** | AI capability already integrated into forensic tools |
 | **Academic Implementation** | Published academic work with a working implementation |
 | **Academic Idea** | Proposed in academic literature but not yet implemented |
-| **Application Envisioned** | Potential AI application identified but not yet explored |
 
 Each entry includes the AI relevance note and, where applicable, a supporting citation.
 
@@ -58,7 +57,6 @@ examples/ai_applicability_data/techniques/
     ac-idea/
       1.bib               # BibTeX entry
     ac-imp/
-    app-env/
     in-tool/
     non-ai/
 ```
@@ -152,7 +150,6 @@ examples/
         extension_data.json               # Assessment history
         ac-idea/1.bib                     # AI applicability entries as .bib or .txt
         ac-imp/
-        app-env/
         in-tool/
         non-ai/
       DFT-1002/

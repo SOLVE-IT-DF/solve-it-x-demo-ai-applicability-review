@@ -17,7 +17,7 @@ import json
 import sys
 from pathlib import Path
 
-CATEGORY_DIRS = ["ac-idea", "ac-imp", "app-env", "in-tool", "non-ai"]
+CATEGORY_DIRS = ["ac-idea", "ac-imp", "in-tool", "non-ai"]
 DEFAULT_TECHNIQUES_DIR = Path(__file__).parent.parent / "examples" / "ai_applicability_data" / "techniques"
 
 

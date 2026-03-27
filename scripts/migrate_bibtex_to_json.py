@@ -4,7 +4,7 @@ Migration script: populates the SOLVE-IT-X AI Applicability extension from
 the solve-it-ai-applications BibTeX source.
 
 For each technique:
-  1. Creates category subfolders (app-env, ac-idea, ac-imp, in-tool, non-ai)
+  1. Creates category subfolders (ac-idea, ac-imp, in-tool, non-ai)
   2. Copies raw .bib files into the appropriate subfolders
   3. Writes extension_data.json with metadata only (reviewed_name, renamed, unassessed)
 
@@ -29,7 +29,7 @@ REVIEW_ERA_COMMIT = "c8143a6ef4121334d412a28213baa1b4614160c3"
 
 SOLVE_IT_REPO_URL = "https://github.com/SOLVE-IT-DF/solve-it.git"
 
-CATEGORY_DIRS = ["app-env", "ac-idea", "ac-imp", "in-tool", "non-ai"]
+CATEGORY_DIRS = ["ac-idea", "ac-imp", "in-tool", "non-ai"]
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)

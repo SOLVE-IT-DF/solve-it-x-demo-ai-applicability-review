@@ -27,7 +27,6 @@ CATEGORY_LABELS = {
     "in_tool": "In Tools",
     "ac_imp": "Academic Implementation",
     "ac_idea": "Academic Idea",
-    "app_env": "Application Envisioned",
     "non_ai": "Non-AI",
 }
 
@@ -35,7 +34,6 @@ CATEGORY_DIR_TO_KEY = {
     "in-tool": "in_tool",
     "ac-imp": "ac_imp",
     "ac-idea": "ac_idea",
-    "app-env": "app_env",
     "non-ai": "non_ai",
 }
 
@@ -43,7 +41,6 @@ CATEGORY_COLOURS = {
     "in_tool": "#16a34a",
     "ac_imp": "#2563eb",
     "ac_idea": "#7c3aed",
-    "app_env": "#d97706",
     "non_ai": "#6b7280",
 }
 
@@ -51,7 +48,6 @@ CATEGORY_SHORT_LABELS = {
     "in_tool": "In Tools",
     "ac_imp": "Ac. Impl.",
     "ac_idea": "Ac. Idea",
-    "app_env": "Envisioned",
     "non_ai": "Non-AI",
 }
 
@@ -59,11 +55,10 @@ CATEGORY_BG_COLOURS = {
     "in_tool": "#dcfce7",
     "ac_imp": "#dbeafe",
     "ac_idea": "#ede9fe",
-    "app_env": "#fef3c7",
     "non_ai": "#f3f4f6",
 }
 
-CATEGORY_ORDER = ["in_tool", "ac_imp", "ac_idea", "app_env", "non_ai"]
+CATEGORY_ORDER = ["in_tool", "ac_imp", "ac_idea", "non_ai"]
 
 
 # ---------------------------------------------------------------------------

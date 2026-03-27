@@ -9,7 +9,6 @@ or category subfolders, and populates them with the standard structure:
     extension_data.json       # {"unassessed": true}
     ac-idea/
     ac-imp/
-    app-env/
     in-tool/
     non-ai/
 
@@ -24,7 +23,7 @@ import argparse
 import json
 from pathlib import Path
 
-CATEGORY_DIRS = ["ac-idea", "ac-imp", "app-env", "in-tool", "non-ai"]
+CATEGORY_DIRS = ["ac-idea", "ac-imp", "in-tool", "non-ai"]
 
 DEFAULT_PATH = Path(__file__).parent.parent / "examples" / "ai_applicability_data" / "techniques"
 
