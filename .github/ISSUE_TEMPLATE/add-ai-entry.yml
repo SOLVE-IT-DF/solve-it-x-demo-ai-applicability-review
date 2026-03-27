@@ -1,0 +1,43 @@
+name: Add AI Applicability Entry
+description: Submit a new AI applicability entry for a digital forensic technique
+labels: ["ai-entry"]
+body:
+  - type: input
+    id: technique_id
+    attributes:
+      label: Technique ID
+      description: The SOLVE-IT technique identifier (e.g. DFT-1001)
+      placeholder: DFT-1001
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: The AI applicability category for this entry
+      options:
+        - In Tools
+        - Academic Implementation
+        - Academic Idea
+        - Non-AI
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Description of how AI is relevant or applied to this technique
+      placeholder: Describe the AI relevance...
+    validations:
+      required: true
+
+  - type: textarea
+    id: bibtex
+    attributes:
+      label: BibTeX Entry
+      description: BibTeX citation for the reference
+      render: bibtex
+    validations:
+      required: true

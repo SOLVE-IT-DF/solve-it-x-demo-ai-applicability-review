@@ -1,0 +1,65 @@
+name: Add AI Applicability Entry from Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  add-entry:
+    if: contains(github.event.issue.labels.*.name, 'ai-entry')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Parse issue and write entry files
+        id: add-entry
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: python scripts/add-entry-from-issue.py
+
+      - name: Create branch, commit, and open PR
+        if: steps.add-entry.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.add-entry.outputs.branch_name }}
+          PR_TITLE: ${{ steps.add-entry.outputs.pr_title }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add extensions/
+          git commit -m "$PR_TITLE"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "$PR_TITLE" \
+            --body-file /tmp/pr-body.md \
+            --base main
+          PR_URL=$(gh pr view --json url -q .url)
+          gh issue comment "$ISSUE_NUMBER" --body "PR created: $PR_URL"
+
+      - name: Comment on issue (validation failure)
+        if: failure() && steps.add-entry.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ERROR_MSG: ${{ steps.add-entry.outputs.error }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "**Validation failed:** $ERROR_MSG"
+          gh issue edit "$ISSUE_NUMBER" --add-label "validation-failed"
