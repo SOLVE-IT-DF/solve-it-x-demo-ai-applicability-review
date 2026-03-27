@@ -26,20 +26,20 @@ body:
       required: true
 
   - type: textarea
-    id: notes
-    attributes:
-      label: Notes
-      description: Description of how AI is relevant or applied to this technique
-      placeholder: Describe the AI relevance...
-    validations:
-      required: true
-
-  - type: textarea
     id: bibtex
     attributes:
       label: BibTeX Entry
       description: BibTeX citation for the reference
       placeholder: copy BibTeX here
       render: bibtex
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Describe how the supplied reference documents the way that AI applies to this technique
+      placeholder: Describe the AI relevance...
     validations:
       required: true
