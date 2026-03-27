@@ -15,6 +15,7 @@ Exit codes:
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -218,14 +219,30 @@ def main():
 
     # --- Record assessment ---
 
-    submitter = os.environ.get("ISSUE_AUTHOR", "")
+    github_username = os.environ.get("ISSUE_AUTHOR", "")
+    display_name = ""
+    if github_username:
+        try:
+            result = subprocess.run(
+                ["gh", "api", f"/users/{github_username}", "--jq", ".name"],
+                capture_output=True, text=True, timeout=10
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                display_name = result.stdout.strip()
+        except Exception:
+            pass
+
+    assessment = {"date": date.today().isoformat(), "by": display_name or github_username}
+    if github_username:
+        assessment["github"] = github_username
+
     ext_path = TECHNIQUES_DIR / technique_id / "extension_data.json"
     if ext_path.exists():
         ext_data = json.loads(ext_path.read_text())
     else:
         ext_data = {}
     assessments = ext_data.get("assessments", [])
-    assessments.append({"date": date.today().isoformat(), "by": submitter})
+    assessments.append(assessment)
     ext_data["assessments"] = assessments
     ext_path.write_text(json.dumps(ext_data, indent=4) + "\n")
     files_created.append(str(ext_path.relative_to(repo_root)))
