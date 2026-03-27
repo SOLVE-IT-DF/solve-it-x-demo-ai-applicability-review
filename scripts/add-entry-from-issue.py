@@ -16,6 +16,7 @@ import json
 import os
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 from pybtex.database import parse_string
@@ -214,6 +215,20 @@ def main():
         str(json_path.relative_to(repo_root)),
         str(bib_path.relative_to(repo_root)),
     ]
+
+    # --- Record assessment ---
+
+    submitter = os.environ.get("ISSUE_AUTHOR", "")
+    ext_path = TECHNIQUES_DIR / technique_id / "extension_data.json"
+    if ext_path.exists():
+        ext_data = json.loads(ext_path.read_text())
+    else:
+        ext_data = {}
+    assessments = ext_data.get("assessments", [])
+    assessments.append({"date": date.today().isoformat(), "by": submitter})
+    ext_data["assessments"] = assessments
+    ext_path.write_text(json.dumps(ext_data, indent=4) + "\n")
+    files_created.append(str(ext_path.relative_to(repo_root)))
 
     # --- Outputs ---
 
