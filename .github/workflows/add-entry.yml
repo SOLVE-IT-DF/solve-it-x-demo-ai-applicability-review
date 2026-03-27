@@ -29,6 +29,7 @@ jobs:
       - name: Parse issue and write entry files
         id: add-entry
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
