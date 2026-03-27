@@ -352,7 +352,7 @@ def main():
     parser.add_argument(
         'extension_path',
         nargs='?',
-        default='examples',
+        default='extensions',
         help='Path to extension folder containing demo_extension_data and extension_config.json (default: examples)'
     )
     parser.add_argument(
