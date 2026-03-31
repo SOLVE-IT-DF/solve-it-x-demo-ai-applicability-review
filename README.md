@@ -59,7 +59,18 @@ Each technique's `extension_data.json` tracks assessment history:
 
 Unassessed techniques have an empty list: `{"assessments": []}`.
 
-## Adding or updating entries
+## Adding entries via GitHub Issues
+
+The easiest way to add a new entry is through the GitHub issue form:
+
+1. Click the **+ Add entry** button on any technique in the [HTML viewer](https://solve-it-df.github.io/solve-it-x-demo-ai-applicability-review/), or [open a new issue](https://github.com/SOLVE-IT-DF/solve-it-x-demo-ai-applicability-review/issues/new?template=add-ai-entry.yml) directly
+2. Fill in the technique ID, category, BibTeX citation, and notes
+3. Add the **ai-entry** label to the issue
+4. A GitHub Actions workflow will automatically validate the submission, check for duplicate references, write the entry files, record an assessment, and open a pull request
+
+The PR includes a summary of the entry, the BibTeX citation, and any duplicate warnings for review before merging.
+
+## Adding or updating entries manually
 
 Each technique folder contains category subfolders where you can drop citation files:
 
@@ -139,7 +150,7 @@ python3 build_solve-it-x.py
 
 This clones the main SOLVE-IT repo, copies in the extension data, reads all `.json`/`.bib` files from category subfolders at build time, generates the HTML viewer and report, and places both in `docs/`.
 
-The included GitHub Actions workflow (`build.yml`) builds automatically on push to main.
+The included GitHub Actions workflow (`build.yml`) builds automatically on push to main. A separate workflow (`add-entry.yml`) handles automated entry creation from GitHub issues.
 
 ## Repository structure
 
@@ -162,6 +173,7 @@ extensions/
     weaknesses/                           # Standard SOLVE-IT-X structure (no data)
     mitigations/                          # Standard SOLVE-IT-X structure (no data)
 scripts/
+  add-entry-from-issue.py                # Parse issue form and write entry files
   assess-technique.py                    # Record an assessment for a technique
   init-new-techniques.py                 # Populate new technique folders with subfolders
   init-solve-it-x.py                     # Scaffold new extensions

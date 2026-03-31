@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-03-27 (2)
+
+### Features
+
+- **Add entry via GitHub Issues**: New issue form template and automation workflow that allows users to submit new AI applicability entries through a GitHub issue. The workflow validates the submission, checks for duplicate BibTeX references, writes the `.json` and `.bib` files, records an assessment, and opens a pull request.
+- **"+ Add entry" button in HTML viewer**: Each technique's detail panel now includes a button that links to the pre-filled GitHub issue form for that technique.
+- **Assessment records now include GitHub username**: Assessments created via the issue workflow record the submitter's display name (resolved via the GitHub API) and their GitHub username in a separate `github` field.
+
+### Data format changes
+
+- Added optional `github` field to assessment entries in `extension_data.json` for tracking the GitHub username of the submitter.
+
 ## 2026-03-27
 
 ### Data format changes
