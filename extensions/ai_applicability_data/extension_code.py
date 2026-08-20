@@ -610,7 +610,7 @@ def get_markdown_for_mitigation_suffix(m_id, kb=None):
 # Report generation
 # ---------------
 
-def _render_technique_report_section(kb, t_id):
+def _render_technique_report_section(kb, t_id, objective_id=""):
     """Render a single technique's AI applicability as HTML for the report."""
     technique = kb.get_technique(t_id)
     if not technique:
@@ -624,7 +624,22 @@ def _render_technique_report_section(kb, t_id):
     label = _status_label(ext)
     fg, bg, border = _status_colours(ext)
 
-    html = f'<div class="technique" id="{escape(t_id)}">\n'
+    # Categories present for this technique, written into the markup so the
+    # in-page filter can select on them without re-reading the data.
+    assessed = _is_assessed(ext)
+    ai = _read_entries_for_technique(t_id) if assessed else {}
+    present_cats = [c for c in CATEGORY_ORDER if ai.get(c)]
+    if assessed:
+        status = "recent" if _is_recent(ext) else "assessed"
+    else:
+        status = "unassessed"
+
+    html = (
+        f'<div class="technique" id="{escape(t_id)}" '
+        f'data-cats="{" ".join(present_cats)}" '
+        f'data-status="{status}" '
+        f'data-objective="{escape(objective_id)}">\n'
+    )
     html += (
         f'<h3 style="margin:0 0 4px 0;font-size:1rem">{escape(t_id)}: {t_name} '
         f'<span style="font-size:.75rem;font-weight:normal;padding:2px 8px;border-radius:4px;'
@@ -633,7 +648,7 @@ def _render_technique_report_section(kb, t_id):
     if t_desc:
         html += f'<p style="margin:0 0 8px 0;color:#4b5563;font-size:.85rem">{t_desc}</p>\n'
 
-    if not _is_assessed(ext):
+    if not assessed:
         html += (
             '<p style="color:#6b7280;font-style:italic;font-size:.85rem">'
             'This technique has not yet been assessed for AI applicability.</p>\n'
@@ -654,7 +669,6 @@ def _render_technique_report_section(kb, t_id):
             f'Assessments: {items}</div>\n'
         )
 
-    ai = _read_entries_for_technique(t_id)
     has_any = False
 
     for cat in CATEGORY_ORDER:
@@ -665,7 +679,7 @@ def _render_technique_report_section(kb, t_id):
         colour = CATEGORY_COLOURS[cat]
         label = CATEGORY_LABELS[cat]
 
-        html += f'<div style="margin-bottom:6px">\n'
+        html += f'<div class="cat-block" data-cat="{cat}" style="margin-bottom:6px">\n'
         html += f'<div style="font-size:.8rem;font-weight:600;color:{colour};margin-bottom:2px">{escape(label)}</div>\n'
         for entry in entries:
             html += _render_entry_html(entry)
@@ -679,6 +693,116 @@ def _render_technique_report_section(kb, t_id):
 
     html += '</div>\n'
     return html
+
+
+# CSS and JS for the report's filter controls.  These are kept out of the
+# report f-string deliberately: an f-string would require every brace to be
+# doubled, which is easy to get wrong and hard to read.
+_REPORT_FILTER_CSS = """
+  [hidden] { display: none !important; }
+  .filters { background: #f9fafb; border: 1px solid #d1d5db; border-radius: 6px;
+             padding: 8px 14px; margin-bottom: 16px; }
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+                font-size: .8rem; color: #4b5563; }
+  .filter-row + .filter-row { margin-top: 8px; padding-top: 8px;
+                              border-top: 1px solid #e5e7eb; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+          font: inherit; font-size: .78rem; padding: 3px 10px; border-radius: 999px;
+          background: #fff; color: #4b5563; border: 1px solid #d1d5db; }
+  .pill:hover { border-color: #9ca3af; }
+  .pill:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+  .pill[aria-pressed="true"] { background: var(--pill-bg); color: var(--pill-fg);
+                               border-color: var(--pill-fg); font-weight: 600; }
+  .pill-dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .pill-count { color: #6b7280; font-weight: 400; }
+  .pill[aria-pressed="true"] .pill-count { color: inherit; }
+  .pill-reset { border-style: dashed; }
+  .filter-count { margin-left: auto; font-size: .75rem; color: #6b7280; }
+  .filter-toggle { display: inline-flex; align-items: center; gap: 6px;
+                   font-size: .78rem; color: #4b5563; cursor: pointer; }
+  .no-results { display: none; padding: 24px; text-align: center; color: #6b7280;
+                font-style: italic; border: 1px dashed #d1d5db; border-radius: 6px; }
+  body.no-results-shown .no-results { display: block; }
+  /* Objectives hidden: a flat run of techniques, easier to select and copy. */
+  body.flat .objective-heading,
+  body.flat .objective-desc,
+  body.flat .toc { display: none; }
+  body.flat .technique { margin-left: 0; padding-left: 0; border-left: none; }
+"""
+
+_REPORT_FILTER_JS = """
+(function () {
+  var body = document.body;
+  var pills = Array.prototype.slice.call(document.querySelectorAll('.pill[data-cat]'));
+  var reset = document.getElementById('filter-reset');
+  var counter = document.getElementById('filter-count');
+  var flatToggle = document.getElementById('hide-objectives');
+  var techniques = Array.prototype.slice.call(document.querySelectorAll('.technique'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section.objective'));
+  var tocItems = Array.prototype.slice.call(document.querySelectorAll('.toc li[data-objective]'));
+  var total = techniques.length;
+
+  function activeCats() {
+    return pills
+      .filter(function (p) { return p.getAttribute('aria-pressed') === 'true'; })
+      .map(function (p) { return p.dataset.cat; });
+  }
+
+  function apply() {
+    var active = activeCats();
+    var filtering = active.length > 0;
+    var shown = 0;
+
+    techniques.forEach(function (t) {
+      var cats = (t.dataset.cats || '').split(' ').filter(Boolean);
+      var match = !filtering || cats.some(function (c) { return active.indexOf(c) !== -1; });
+      t.hidden = !match;
+      if (match) { shown += 1; }
+      Array.prototype.forEach.call(t.querySelectorAll('.cat-block'), function (b) {
+        b.hidden = filtering && active.indexOf(b.dataset.cat) === -1;
+      });
+    });
+
+    sections.forEach(function (s) {
+      s.hidden = !s.querySelector('.technique:not([hidden])');
+    });
+    tocItems.forEach(function (li) {
+      var s = document.querySelector('section.objective[data-objective="' + li.dataset.objective + '"]');
+      li.hidden = !s || s.hidden;
+    });
+
+    if (reset) { reset.hidden = !filtering; }
+    if (counter) {
+      counter.textContent = filtering
+        ? 'Showing ' + shown + ' of ' + total + ' techniques'
+        : total + ' techniques';
+    }
+    body.classList.toggle('no-results-shown', shown === 0);
+  }
+
+  pills.forEach(function (p) {
+    p.addEventListener('click', function () {
+      p.setAttribute('aria-pressed', p.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      apply();
+    });
+  });
+
+  if (reset) {
+    reset.addEventListener('click', function () {
+      pills.forEach(function (p) { p.setAttribute('aria-pressed', 'false'); });
+      apply();
+    });
+  }
+
+  if (flatToggle) {
+    flatToggle.addEventListener('change', function () {
+      body.classList.toggle('flat', flatToggle.checked);
+    });
+  }
+
+  apply();
+})();
+"""
 
 
 def _generate_report(kb):
@@ -711,16 +835,20 @@ def _generate_report(kb):
             for cat in CATEGORY_ORDER:
                 cat_counts[cat] += len(ai.get(cat, []))
 
-    legend_items = ""
+    # Category pills.  Each is a toggle; with none pressed the whole report is
+    # shown, otherwise techniques are filtered to the union of the pressed
+    # categories and non-matching entries within them are hidden.
+    pill_items = ""
     for cat in CATEGORY_ORDER:
         if cat_counts[cat] > 0:
             colour = CATEGORY_COLOURS[cat]
+            bg = CATEGORY_BG_COLOURS[cat]
             label = CATEGORY_LABELS[cat]
-            legend_items += (
-                f'<span style="display:inline-flex;align-items:center;gap:4px">'
-                f'<span style="width:10px;height:10px;border-radius:2px;background:{colour};'
-                f'display:inline-block"></span>'
-                f'{label}: {cat_counts[cat]}</span>\n'
+            pill_items += (
+                f'<button type="button" class="pill" data-cat="{cat}" aria-pressed="false" '
+                f'style="--pill-fg:{colour};--pill-bg:{bg}">'
+                f'<span class="pill-dot" style="background:{colour}"></span>'
+                f'{label} <span class="pill-count">{cat_counts[cat]}</span></button>\n'
             )
 
     objectives = kb.list_objectives()
@@ -728,6 +856,7 @@ def _generate_report(kb):
 
     body_html = ""
     toc_html = ""
+    rendered = 0
 
     for obj in objectives:
         o_id = obj.get('id', '')
@@ -739,22 +868,34 @@ def _generate_report(kb):
             continue
 
         anchor = o_id.lower().replace(' ', '-')
-        toc_html += f'<li><a href="#{escape(anchor)}">{escape(o_id)}: {o_name}</a></li>\n'
 
-        body_html += f'<section class="objective" id="{escape(anchor)}">\n'
-        body_html += f'<h2 style="margin:24px 0 4px 0;padding-bottom:4px;border-bottom:2px solid #e5e7eb">{escape(o_id)}: {o_name}</h2>\n'
-        if o_desc:
-            body_html += f'<p style="color:#4b5563;margin:0 0 12px 0">{o_desc}</p>\n'
-
+        section_body = ""
         for t_id in t_ids:
-            body_html += _render_technique_report_section(kb, t_id)
+            section_body += _render_technique_report_section(kb, t_id, o_id)
             technique = kb.get_technique(t_id)
             if technique:
                 for sub in technique.get('subtechniques', []):
                     sub_id = str(sub) if not isinstance(sub, dict) else sub.get('id', '')
                     if sub_id:
-                        body_html += _render_technique_report_section(kb, sub_id)
+                        section_body += _render_technique_report_section(kb, sub_id, o_id)
 
+        rendered += section_body.count('<div class="technique"')
+
+        toc_html += (
+            f'<li data-objective="{escape(o_id)}">'
+            f'<a href="#{escape(anchor)}">{escape(o_id)}: {o_name}</a></li>\n'
+        )
+
+        body_html += f'<section class="objective" id="{escape(anchor)}" data-objective="{escape(o_id)}">\n'
+        body_html += (
+            f'<h2 class="objective-heading" '
+            f'style="margin:24px 0 4px 0;padding-bottom:4px;border-bottom:2px solid #e5e7eb">'
+            f'{escape(o_id)}: {o_name}</h2>\n'
+        )
+        if o_desc:
+            body_html += f'<p class="objective-desc" style="color:#4b5563;margin:0 0 12px 0">{o_desc}</p>\n'
+
+        body_html += section_body
         body_html += '</section>\n'
 
     report_html = f"""<!DOCTYPE html>
@@ -775,9 +916,7 @@ def _generate_report(kb):
   .stats {{ display: flex; gap: 16px; flex-wrap: wrap; font-size: .85rem;
             background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;
             padding: 10px 14px; color: #1e40af; margin-bottom: 8px; }}
-  .legend {{ display: flex; gap: 16px; flex-wrap: wrap; font-size: .8rem;
-             background: #f9fafb; border: 1px solid #d1d5db; border-radius: 6px;
-             padding: 8px 14px; color: #4b5563; margin-bottom: 16px; }}
+{_REPORT_FILTER_CSS}
   .toc {{ background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px;
           padding: 12px 16px; margin-bottom: 24px; }}
   .toc h2 {{ font-size: 1rem; margin-bottom: 6px; }}
@@ -792,6 +931,7 @@ def _generate_report(kb):
     .technique {{ break-inside: avoid; }}
     section.objective {{ break-before: page; }}
     .aicopy {{ display:none; }}
+    .filters {{ display: none; }}
   }}
 </style>
 </head>
@@ -811,9 +951,19 @@ def _generate_report(kb):
     <span>Unassessed: {unassessed}</span>
     <span style="color:#6b7280;font-size:.75rem">SOLVE-IT synced: {sync_date or 'unknown'}</span>
   </div>
-  <div class="legend">
-    <strong>Categories</strong>
-    {legend_items}
+  <div class="filters">
+    <div class="filter-row">
+      <strong>Categories</strong>
+      {pill_items}
+      <button type="button" class="pill pill-reset" id="filter-reset" hidden>Show all</button>
+      <span class="filter-count" id="filter-count">{rendered} techniques</span>
+    </div>
+    <div class="filter-row">
+      <label class="filter-toggle">
+        <input type="checkbox" id="hide-objectives">
+        Hide objective headings (flat list, easier to copy)
+      </label>
+    </div>
   </div>
 </div>
 
@@ -826,9 +976,14 @@ def _generate_report(kb):
 
 {body_html}
 
+<p class="no-results">No techniques match the selected categories.</p>
+
 <footer style="margin-top:32px;padding-top:12px;border-top:1px solid #e5e7eb;font-size:.75rem;color:#9ca3af">
   Generated by SOLVE-IT-X: AI Applicability Review extension.
 </footer>
+<script>
+{_REPORT_FILTER_JS}
+</script>
 </body>
 </html>"""
 

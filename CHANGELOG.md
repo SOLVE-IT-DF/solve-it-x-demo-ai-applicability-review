@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-08-20
+
+### Features
+
+- **Category filters in the AI applicability report**: The report's static category legend is now a row of toggle pills (In Tools, Academic Implementation, Academic Idea, Non-AI), each showing its entry count. Selecting one or more pills narrows the report to techniques holding an entry in those categories, and hides the non-matching category blocks within the techniques that remain, so the filtered report reads end to end as a single category. A "Show all" button clears the selection and a counter reports how many of the techniques are currently shown. Objectives whose techniques are all filtered out are hidden along with their table-of-contents entries.
+- **Hide objective headings**: A checkbox flattens the report by hiding the objective headings, descriptions and table of contents, leaving a continuous run of technique blocks that can be selected and copied in one go. Objectives remain in the document as separators; they are not a filter.
+
+### Implementation notes
+
+- Technique blocks now carry `data-cats`, `data-status` and `data-objective` attributes, and each category block within a technique carries `data-cat`, so the filter selects on the markup rather than re-reading the data.
+- The filter CSS and JavaScript live in the `_REPORT_FILTER_CSS` and `_REPORT_FILTER_JS` module constants rather than inside the report f-string, which avoids having to double every brace.
+- The filter controls are hidden when printing, so a filtered report prints as the filtered view.
+
 ## 2026-03-27 (2)
 
 ### Features
